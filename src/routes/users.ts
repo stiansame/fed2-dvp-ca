@@ -2,6 +2,11 @@ import { Router } from "express";
 import { ResultSetHeader } from "mysql2";
 import { pool } from "../database";
 import { User, Article, ArticleWithUser } from "../interfaces";
+import {
+  validateUserId,
+  validaterequiredUserData,
+  validatePartialUserData,
+} from "../middleware/validation";
 
 const router = Router();
 
@@ -35,13 +40,9 @@ router.get("/", async (req, res) => {
 });
 
 //GET single user by ID
-router.get("/:id", async (req, res) => {
+router.get("/:id", validateUserId, async (req, res) => {
   try {
     const userId = Number(req.params.id);
-
-    if (isNaN(userId)) {
-      return res.status(400).json({ error: "Invalid user ID" });
-    }
 
     const [rows] = await pool.execute(
       "select id, username, email from users where id = ?",
@@ -65,20 +66,17 @@ router.get("/:id", async (req, res) => {
 });
 
 //GET single user with articles
-router.get("/:id/articles", async (req, res) => {
+router.get("/:id/articles", validateUserId, async (req, res) => {
   try {
     const userId = Number(req.params.id);
-
-    if (isNaN(userId)) {
-      return res.status(400).json({ error: "Invalid user ID" });
-    }
 
     const [rows] = await pool.execute(
       `
       SELECT 
         a.id,
         a.title,
-        a.content,
+        a.body,
+        a.category,
         a.submitted_by,
         a.created_at
       FROM articles a
@@ -98,7 +96,7 @@ router.get("/:id/articles", async (req, res) => {
 
 //GET articles by specific user with Author-info
 
-router.get("/:id/articles-with-author", async (req, res) => {
+router.get("/:id/articles-with-author", validateUserId, async (req, res) => {
   const userId = Number(req.params.id);
 
   const [rows] = await pool.execute(
@@ -106,7 +104,8 @@ router.get("/:id/articles-with-author", async (req, res) => {
     SELECT
      a.id,
      a.title,
-     a.content,
+     a.body,
+     a.category,
      a.submitted_by,
      a.created_at,
      u.username,
@@ -126,16 +125,9 @@ router.get("/:id/articles-with-author", async (req, res) => {
 
 // CREATE new USER
 
-router.post("/users", async (req, res) => {
+router.post("/users", validaterequiredUserData, async (req, res) => {
   try {
     const { username, email } = req.body;
-
-    //Validation
-    if (!username || !email) {
-      return res.status(400).json({
-        error: "Username and email are required",
-      });
-    }
 
     //Insert new user into database
     const [result]: [ResultSetHeader, any] = await pool.execute(
@@ -156,126 +148,104 @@ router.post("/users", async (req, res) => {
 // --- PUT ROUTES --- //
 
 // Update a user (full replacement)
-router.put("/:id", async (req, res) => {
-  try {
-    const userId = Number(req.params.id);
-    const { username, email } = req.body;
+router.put(
+  "/:id",
+  validateUserId,
+  validaterequiredUserData,
+  async (req, res) => {
+    try {
+      const userId = Number(req.params.id);
+      const { username, email } = req.body;
 
-    // Validate ID
-    if (isNaN(userId)) {
-      return res.status(400).json({
-        error: "Invalid user ID",
+      // Update the user in the database
+      const [result]: [ResultSetHeader, any] = await pool.execute(
+        "UPDATE users SET username = ?, email = ? WHERE id = ?",
+        [username, email, userId],
+      );
+
+      // Check if user was found and updated
+      if (result.affectedRows === 0) {
+        return res.status(404).json({
+          error: "User not found",
+        });
+      }
+
+      const user: User = { id: userId, username, email };
+      res.json(user);
+    } catch (error) {
+      console.error("Database error:", error);
+      res.status(500).json({
+        error: "Failed to update user",
       });
     }
-
-    // Validate required fields
-    if (!username || !email) {
-      return res.status(400).json({
-        error: "Username and email are required",
-      });
-    }
-
-    // Update the user in the database
-    const [result]: [ResultSetHeader, any] = await pool.execute(
-      "UPDATE users SET username = ?, email = ? WHERE id = ?",
-      [username, email, userId],
-    );
-
-    // Check if user was found and updated
-    if (result.affectedRows === 0) {
-      return res.status(404).json({
-        error: "User not found",
-      });
-    }
-
-    const user: User = { id: userId, username, email };
-    res.json(user);
-  } catch (error) {
-    console.error("Database error:", error);
-    res.status(500).json({
-      error: "Failed to update user",
-    });
-  }
-});
+  },
+);
 
 // --- PATCH ROUTES --- //
 
 // Partially update a user
-router.patch("/:id", async (req, res) => {
-  try {
-    const userId = Number(req.params.id);
-    const { username, email } = req.body;
+router.patch(
+  "/:id",
+  validateUserId,
+  validatePartialUserData,
+  async (req, res) => {
+    try {
+      const userId = Number(req.params.id);
+      const { username, email } = req.body;
 
-    // Validate ID
-    if (isNaN(userId)) {
-      return res.status(400).json({
-        error: "Invalid user ID",
+      // Build dynamic UPDATE query based on provided fields
+      const fieldsToUpdate = [];
+      const values = [];
+
+      if (username) {
+        fieldsToUpdate.push("username = ?");
+        values.push(username);
+      }
+
+      if (email) {
+        fieldsToUpdate.push("email = ?");
+        values.push(email);
+      }
+
+      values.push(userId);
+
+      //UPDATE provided fields
+      const query = `UPDATE users SET ${fieldsToUpdate.join(", ")} WHERE id = ?`;
+      const [result]: [ResultSetHeader, any] = await pool.execute(
+        query,
+        values,
+      );
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({
+          error: "User not found",
+        });
+      }
+
+      // Get the updated user to return to the frontend
+      const [rows] = await pool.execute(
+        "SELECT id, username, email FROM users WHERE id = ?",
+        [userId],
+      );
+      const users = rows as User[];
+      const user = users[0];
+
+      res.json(user);
+    } catch (error) {
+      console.error("Database error:", error);
+      res.status(500).json({
+        error: "Failed to update user",
       });
     }
-
-    // Check that at least one field is provided
-    if (!username && !email) {
-      return res.status(400).json({
-        error: "At least one field (username or email) is required",
-      });
-    }
-
-    // Build dynamic UPDATE query based on provided fields
-    const fieldsToUpdate = [];
-    const values = [];
-
-    if (username) {
-      fieldsToUpdate.push("username = ?");
-      values.push(username);
-    }
-
-    if (email) {
-      fieldsToUpdate.push("email = ?");
-      values.push(email);
-    }
-
-    values.push(userId);
-
-    //UPDATE provided fields
-    const query = `UPDATE users SET ${fieldsToUpdate.join(", ")} WHERE id = ?`;
-    const [result]: [ResultSetHeader, any] = await pool.execute(query, values);
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({
-        error: "User not found",
-      });
-    }
-
-    // Get the updated user to return to the frontend
-    const [rows] = await pool.execute(
-      "SELECT id, username, email FROM users WHERE id = ?",
-      [userId],
-    );
-    const users = rows as User[];
-    const user = users[0];
-
-    res.json(user);
-  } catch (error) {
-    console.error("Database error:", error);
-    res.status(500).json({
-      error: "Failed to update user",
-    });
-  }
-});
+  },
+);
 
 //--- DELETE ROUTES --- //
 
 // Delete a user
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", validateUserId, async (req, res) => {
   try {
     const userId = Number(req.params.id);
-
-    // Validate ID
-    if (isNaN(userId)) {
-      return res.status(400).json({
-        error: "Invalid user ID",
-      });
-    }
 
     // Delete the user from the database
     const [result]: [ResultSetHeader, any] = await pool.execute(

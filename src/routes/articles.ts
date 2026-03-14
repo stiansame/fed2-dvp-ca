@@ -10,11 +10,20 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const [rows] = await pool.execute(`
+    //pagination parameters
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+
+    //calculate offset
+    const offset = (page - 1) * limit;
+
+    const [rows] = await pool.execute(
+      `
       SELECT 
         a.id,
         a.title,
-        a.content,
+        a.body,
+        a.category,
         a.submitted_by,
         a.created_at,
         u.username,
@@ -22,7 +31,11 @@ router.get("/", async (req, res) => {
       FROM articles a
       INNER JOIN users u ON a.submitted_by = u.id
       ORDER BY a.created_at DESC
-    `);
+      limit ?
+      offset ?
+    `,
+      [limit.toString(), offset.toString()],
+    );
 
     const articles = rows as ArticleWithUser[];
     res.json(articles);
