@@ -13,6 +13,68 @@ const router = Router();
 
 // GET all articles with Author information
 
+/**
+ * @swagger
+ * /articles:
+ *   get:
+ *     summary: Get all articles
+ *     description: Returns a paginated list of articles including author information.
+ *     tags:
+ *       - Articles
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number to fetch.
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 10
+ *         description: Number of articles to return per page.
+ *     responses:
+ *       200:
+ *         description: Articles returned successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     example: 10
+ *                   title:
+ *                     type: string
+ *                     example: How to use Express
+ *                   body:
+ *                     type: string
+ *                     example: Article content
+ *                   category:
+ *                     type: string
+ *                     example: Backend
+ *                   submitted_by:
+ *                     type: integer
+ *                     example: 1
+ *                   created_at:
+ *                     type: string
+ *                     format: date-time
+ *                     example: 2026-03-14T10:00:00.000Z
+ *                   username:
+ *                     type: string
+ *                     example: johndoe
+ *                   email:
+ *                     type: string
+ *                     format: email
+ *                     example: john@example.com
+ *       500:
+ *         description: Failed to fetch articles.
+ */
 router.get("/", async (req, res) => {
   try {
     //pagination parameters
@@ -52,6 +114,77 @@ router.get("/", async (req, res) => {
 
 // --- POST Routes --- //
 
+/**
+ * @swagger
+ * /articles:
+ *   post:
+ *     summary: Create an article
+ *     description: Creates a new article for the authenticated user.
+ *     tags:
+ *       - Articles
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - body
+ *               - category
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 minLength: 1
+ *                 example: How to use Express
+ *               body:
+ *                 type: string
+ *                 minLength: 1
+ *                 example: Article content
+ *               category:
+ *                 type: string
+ *                 minLength: 1
+ *                 example: Backend
+ *     responses:
+ *       201:
+ *         description: Article created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Article created successfully!
+ *                 article:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 10
+ *                     title:
+ *                       type: string
+ *                       example: How to use Express
+ *                     body:
+ *                       type: string
+ *                       example: Article content
+ *                     category:
+ *                       type: string
+ *                       example: Backend
+ *                     submitted_by:
+ *                       type: integer
+ *                       example: 1
+ *       400:
+ *         description: Validation failed.
+ *       401:
+ *         description: Missing or malformed access token.
+ *       403:
+ *         description: Invalid or expired token.
+ *       500:
+ *         description: Failed to create article.
+ */
 router.post("/", authenticateToken, validateArticle, async (req, res) => {
   try {
     const { title, body, category } = req.body;
