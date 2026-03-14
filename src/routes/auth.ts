@@ -13,6 +13,69 @@ import { generateToken } from "../utils/jwt";
 const router = Router();
 
 // --- REGISTER ENDPOINT -- //
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     description: Creates a new account and returns the created user without password data.
+ *     tags:
+ *       - Auth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 minLength: 3
+ *                 maxLength: 50
+ *                 example: johndoe
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: john@example.com
+ *               password:
+ *                 type: string
+ *                 minLength: 8
+ *                 example: P@ssw0rd123!
+ *     responses:
+ *       201:
+ *         description: User registered successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User registered successfully!
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     username:
+ *                       type: string
+ *                       example: johndoe
+ *                     email:
+ *                       type: string
+ *                       format: email
+ *                       example: john@example.com
+ *       400:
+ *         description: Validation failed.
+ *       409:
+ *         description: User already exists.
+ *       500:
+ *         description: Failed to register user.
+ */
 router.post("/register", validateRegistration, async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -60,6 +123,65 @@ router.post("/register", validateRegistration, async (req, res) => {
 });
 
 // --- LOGIN ENDPOINT --- //
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Log in a user
+ *     description: Authenticates a user and returns a JWT token.
+ *     tags:
+ *       - Auth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: john@example.com
+ *               password:
+ *                 type: string
+ *                 example: P@ssw0rd123!
+ *     responses:
+ *       200:
+ *         description: Login successful.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Login successful
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     username:
+ *                       type: string
+ *                       example: johndoe
+ *                     email:
+ *                       type: string
+ *                       format: email
+ *                       example: john@example.com
+ *                 token:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example
+ *       400:
+ *         description: Validation failed.
+ *       401:
+ *         description: Invalid email or password.
+ *       500:
+ *         description: Failed to log in.
+ */
 router.post("/login", validateLogin, async (req, res) => {
   try {
     const { email, password } = req.body;
