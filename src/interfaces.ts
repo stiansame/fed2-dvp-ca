@@ -12,7 +12,7 @@ export interface Article {
   body: string;
   category: string;
   submitted_by: string;
-  created_at: string;
+  // created_at: string;
 }
 
 export interface ArticleWithUser extends Article {

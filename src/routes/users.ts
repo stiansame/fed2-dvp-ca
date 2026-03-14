@@ -4,9 +4,9 @@ import { pool } from "../database";
 import { User, Article, ArticleWithUser } from "../interfaces";
 import {
   validateUserId,
-  validaterequiredUserData,
+  validateRequiredUserData,
   validatePartialUserData,
-} from "../middleware/validation";
+} from "../middleware/user-validation";
 
 const router = Router();
 
@@ -125,7 +125,7 @@ router.get("/:id/articles-with-author", validateUserId, async (req, res) => {
 
 // CREATE new USER
 
-router.post("/users", validaterequiredUserData, async (req, res) => {
+router.post("/", validateRequiredUserData, async (req, res) => {
   try {
     const { username, email } = req.body;
 
@@ -151,7 +151,7 @@ router.post("/users", validaterequiredUserData, async (req, res) => {
 router.put(
   "/:id",
   validateUserId,
-  validaterequiredUserData,
+  validateRequiredUserData,
   async (req, res) => {
     try {
       const userId = Number(req.params.id);
