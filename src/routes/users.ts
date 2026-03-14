@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { ResultSetHeader } from "mysql2";
 import { pool } from "../database";
-import { User, Article, ArticleWithUser } from "../interfaces";
+import { User, UserResponse, Article, ArticleWithUser } from "../interfaces";
 import {
   validateUserId,
   validateRequiredUserData,
   validatePartialUserData,
 } from "../middleware/user-validation";
+import { authenticateToken } from "../middleware/auth-validation";
 
 const router = Router();
 
@@ -45,7 +46,7 @@ router.get("/:id", validateUserId, async (req, res) => {
     const userId = Number(req.params.id);
 
     const [rows] = await pool.execute(
-      "select id, username, email from users where id = ?",
+      "SELECT id, username, email from users where id = ?",
       [userId],
     );
 
@@ -150,12 +151,20 @@ router.post("/", validateRequiredUserData, async (req, res) => {
 // Update a user (full replacement)
 router.put(
   "/:id",
+  authenticateToken,
   validateUserId,
   validateRequiredUserData,
   async (req, res) => {
     try {
       const userId = Number(req.params.id);
       const { username, email } = req.body;
+
+      //Check if user is trying to update own account
+      if (req.user!.id !== userId) {
+        return res.status(403).json({
+          error: "Users can only update their own account!",
+        });
+      }
 
       // Update the user in the database
       const [result]: [ResultSetHeader, any] = await pool.execute(
@@ -186,12 +195,20 @@ router.put(
 // Partially update a user
 router.patch(
   "/:id",
+  authenticateToken,
   validateUserId,
   validatePartialUserData,
   async (req, res) => {
     try {
       const userId = Number(req.params.id);
       const { username, email } = req.body;
+
+      //Check if user is trying to update own account
+      if (req.user!.id !== userId) {
+        return res.status(403).json({
+          error: "Users can only update their own account!",
+        });
+      }
 
       // Build dynamic UPDATE query based on provided fields
       const fieldsToUpdate = [];
@@ -243,9 +260,16 @@ router.patch(
 //--- DELETE ROUTES --- //
 
 // Delete a user
-router.delete("/:id", validateUserId, async (req, res) => {
+router.delete("/:id", validateUserId, authenticateToken, async (req, res) => {
   try {
     const userId = Number(req.params.id);
+
+    //Check if user is trying to delete own account
+    if (req.user!.id !== userId) {
+      return res.status(403).json({
+        error: "Users can only delete their own account!",
+      });
+    }
 
     // Delete the user from the database
     const [result]: [ResultSetHeader, any] = await pool.execute(

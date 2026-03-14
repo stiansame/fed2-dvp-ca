@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { Request, Response, NextFunction } from "express";
+import { verifyToken } from "../utils/jwt";
 
 // Validate Registration
 const registerSchema = z.object({
@@ -53,5 +54,68 @@ export const validateLogin = (
     });
   }
 
+  next();
+};
+
+//Validate Article
+const articleSchema = z.object({
+  title: z.string().trim().min(1, "Title is required"),
+  body: z.string().trim().min(1, "Body is required"),
+  category: z.string().trim().min(1, "Category is required"),
+});
+
+export const validateArticle = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const result = articleSchema.safeParse(req.body);
+
+  if (!result.success) {
+    return res.status(400).json({
+      error: "Validation failed",
+      details: result.error.issues.map((issue) => issue.message),
+    });
+  }
+
+  next();
+};
+
+//JWT Authentication
+export const authenticateToken = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const authHeader = req.headers.authorization;
+
+  // Check if Authorization header exists
+  if (!authHeader) {
+    return res.status(401).json({
+      error: "Access token required",
+    });
+  }
+
+  // Check if header follows Bearer format
+  if (!authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      error: "Token must be in format: Bearer <token>",
+    });
+  }
+
+  // Extract token from "Bearer <token>"
+  const token = authHeader.substring(7);
+
+  // Verify the token
+  const payload = verifyToken(token);
+
+  if (!payload) {
+    return res.status(403).json({
+      error: "Invalid or expired token",
+    });
+  }
+
+  // Add user info to request object
+  req.user = { id: payload.userId };
   next();
 };

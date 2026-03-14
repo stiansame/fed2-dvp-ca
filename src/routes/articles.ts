@@ -2,6 +2,10 @@ import { Router } from "express";
 import { pool } from "../database";
 import { Article, ArticleWithUser } from "../interfaces";
 import { ResultSetHeader } from "mysql2";
+import {
+  authenticateToken,
+  validateArticle,
+} from "../middleware/auth-validation";
 
 const router = Router();
 
@@ -46,18 +50,17 @@ router.get("/", async (req, res) => {
   }
 });
 
-export default router;
-
 // --- POST Routes --- //
 
-/* router.post("/", async (req, res) => {
+router.post("/", authenticateToken, validateArticle, async (req, res) => {
   try {
-    const { title, body, category, submitted_by } = req.body;
+    const { title, body, category } = req.body;
+    const userId = (req as any).user.id;
 
     //Insert new article into database
     const [result]: [ResultSetHeader, any] = await pool.execute(
       "insert into articles (title, body, category, submitted_by) VALUES (?, ?, ?, ?)",
-      [title, body, category],
+      [title, body, category, userId],
     );
 
     const article: Article = {
@@ -65,13 +68,18 @@ export default router;
       title,
       body,
       category,
-      submitted_by,
+      submitted_by: userId,
     };
-    res.status(201).json(article);
+    res.status(201).json({
+      message: "Article created successfully!",
+      article: article,
+    });
   } catch (error) {
     console.error("Database error:", error);
     res.status(500).json({
       error: "Failed to create article",
     });
   }
-}); */
+});
+
+export default router;
