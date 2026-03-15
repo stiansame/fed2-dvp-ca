@@ -1,4 +1,3 @@
-import "dotenv/config";
 import mysql, { Pool } from "mysql2/promise";
 
 //Connection pool to manage database connections
