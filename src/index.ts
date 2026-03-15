@@ -1,7 +1,7 @@
 import express from "express";
 import "dotenv/config";
 import cors from "cors";
-import userRoutes from "./routes/users";
+// import userRoutes from "./routes/users";
 import articleRoutes from "./routes/articles";
 import authRoutes from "./routes/auth";
 import swaggerUi from "swagger-ui-express";
@@ -49,7 +49,7 @@ app.use(cors());
 app.use(express.json());
 
 // Connect route modules
-app.use("/users", userRoutes);
+// app.use("/users", userRoutes);
 app.use("/articles", articleRoutes);
 app.use("/auth", authRoutes);
 

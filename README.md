@@ -43,3 +43,36 @@ Build a news platform where users can browse and submit news articles, using an 
 - [x] The create article route must be protected by authentication
 - [x] Include proper error handling and status codes
 - [x] Use parameterised queries for SQL injection prevention
+
+### Required Endpoints
+
+- [x] POST /auth/register - User registration
+      ```
+      {
+      "username": "tyler",
+      "email": "tylerdurden@bestsoaps.com",
+      "password": P@ssword!2026
+      }
+
+````
+- [x] POST /auth/login - User login (returns JWT)
+	```
+{
+  "email": "tylerdurden@bestsoaps.com",
+  "password": P@ssword!2026
+}
+````
+
+- [x] GET /articles - View all articles (public access)
+      Example request: `Get/articles`
+- [x] POST /articles - Submit new article (protected, requires JWT)
+      ```
+      {
+      "title": "Human fat used in soap",
+      "body": "Dapper entrepeneur robbed high profile liposuction clinics and used their waste to manufacture sought after bars of soap",
+      "category": "fiction""
+      }
+
+```
+
+```
