@@ -48,7 +48,7 @@ Build a news platform where users can browse and submit news articles, using an 
 
 - [x] POST /auth/register - User registration
 
-```
+```JSON
       {
       "username": "tyler",
       "email": "tylerdurden@bestsoaps.com",
@@ -58,7 +58,7 @@ Build a news platform where users can browse and submit news articles, using an 
 
 - [x] POST /auth/login - User login (returns JWT)
 
-```
+```JSON
 	{
 	  "email": "tylerdurden@bestsoaps.com",
 	  "password": P@ssword!2026
@@ -67,17 +67,16 @@ Build a news platform where users can browse and submit news articles, using an 
 
 - [x] GET /articles - View all articles (public access)
 
-      Example request: `Get/articles`
+      Example request: Get/articles
       
 - [x] POST /articles - Submit new article (protected, requires JWT)
       
-```
+```JSON
       {
       "title": "Human fat used in soap",
       "body": "Dapper entrepeneur robbed high profile liposuction clinics and used their waste to manufacture sought after bars of soap",
       "category": "fiction""
       }
-
 ```
 
 
