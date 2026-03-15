@@ -47,7 +47,6 @@ Build a news platform where users can browse and submit news articles, using an 
 ### Required Endpoints
 
 - [x] POST /auth/register - User registration
-
 ```JSON
       {
       "username": "tyler",
@@ -55,22 +54,18 @@ Build a news platform where users can browse and submit news articles, using an 
       "password": P@ssword!2026
       }
 ```
-
 - [x] POST /auth/login - User login (returns JWT)
-
 ```JSON
 	{
 	  "email": "tylerdurden@bestsoaps.com",
 	  "password": P@ssword!2026
 	}
 ```
-
 - [x] GET /articles - View all articles (public access)
 
       Example request: Get/articles
-      
+    
 - [x] POST /articles - Submit new article (protected, requires JWT)
-      
 ```JSON
       {
       "title": "Human fat used in soap",
