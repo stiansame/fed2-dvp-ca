@@ -1,2 +1,2 @@
-# Development Platforms Course Assignment (fed2-dvp-ca)
+# Development Platforms CA (FM2AJDP05)
 Course assignment for Noroff FED2 Development Platforms Module
