@@ -204,6 +204,7 @@ As the learner, I am responsible for:
 
 ### Student Responsibility
 
-Copied with pride from @annikaeld
+Copied with pride from [@annikaeld](https://github.com/annikaeld)
+
 **Source:**
 [https://github.com/annikaeld/development-platforms-ca/blob/main/AI-usage.md](https://github.com/annikaeld/development-platforms-ca/blob/main/AI-usage.md)
