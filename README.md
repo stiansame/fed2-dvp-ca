@@ -62,7 +62,8 @@ Build a news platform where users can browse and submit news articles, using an 
 	}
 ```
 - [x] GET /articles - View all articles (public access)
-Example request: Get/articles
+
+Example request: `Get/articles`
     
 - [x] POST /articles - Submit new article (protected, requires JWT)
 ```JSON
