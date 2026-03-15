@@ -2,13 +2,13 @@
 
 Course assignment for Noroff FED2 Development Platforms Module
 
-## Description
+## 📄 Description
 
-### Brief
+### 🧾 Brief
 
 Build a news platform where users can browse and submit news articles, using an Express.js API backend with authentication and database integration. No frontend required.
 
-### Project Requirements
+### 📋 Project Requirements
 
 **Public Access:**
 
@@ -26,9 +26,9 @@ Build a news platform where users can browse and submit news articles, using an 
 - [x] Article details: title, body, category (submission date can be automatic)
 - [x] Articles automatically tagged with submitter (logged-in user) information
 
-## Implementation
+## ⚙️ Implementation
 
-### Tech stack:
+### 🧰 Tech stack:
 
 - [x] Express.js with TypeScript
 - [x] MySQL database with mysql2
@@ -36,7 +36,7 @@ Build a news platform where users can browse and submit news articles, using an 
 - [x] Basic validation
 - [x] Simple error handling
 
-### Key Implementation Requirements
+### 🔑 Key Implementation Requirements
 
 - [x] Use Express Router to organise endpoints
 - [x] Implement JWT authentication middleware
@@ -44,7 +44,7 @@ Build a news platform where users can browse and submit news articles, using an 
 - [x] Include proper error handling and status codes
 - [x] Use parameterised queries for SQL injection prevention
 
-### Required Endpoints
+### 🔌 Required Endpoints
 
 - [x] **POST /auth/register** - User registration
 
@@ -79,7 +79,7 @@ Example request: `Get/articles`
       }
 ```
 
-### DB Tables
+### 🗄️ DB Tables
 
 - [x] users
 
@@ -107,7 +107,7 @@ Example request: `Get/articles`
     );
 ```
 
-## Setup
+## 🛠️ Setup
 
 1. Install dependencies
 
@@ -127,7 +127,7 @@ Example request: `Get/articles`
 	npm run dev
 ```
 
-### Installed dependencies
+### 📦 Installed dependencies
 
 Check your `package.json` file and make sure the following dependencies are in place:
 
@@ -143,7 +143,7 @@ Check your `package.json` file and make sure the following dependencies are in p
 
 ---
 
-### Scripts
+### 📜 Scripts
 
 - [x] `npm run dev`: Starts the server in development mode.
 - [x] `npm run build`: Compiles TypeScript code to JavaScript (for production)
@@ -151,7 +151,7 @@ Check your `package.json` file and make sure the following dependencies are in p
 
 ---
 
-### Swagger
+### 📚 Swagger
 
 Swagger is installed and used for documentation of API-endpoints.
 
@@ -160,14 +160,14 @@ Swagger is installed and used for documentation of API-endpoints.
 
 ---
 
-### For testing (local dev only)
+### 🧩 For testing (local dev only)
 
 You can use these credentials for manual testing in Postman or using Swagger:
 
 - [x] **email**: tylderdurden@bestsoaps.com
 - [x] **password**: P@ssw0rd123!
 
-## Motivation
+## 💡 Motivation
 
 My decision to build an API backend using SQL was an easy one. I use SQL as part of my daily job, and builing and managing REST- APIs is a key competance in my work. In that regard this course has been super-insightful and very relevant to my work.
 
@@ -179,7 +179,7 @@ VS a solutioon such as SupaBase, I think my biggest takeaway is that I much pref
 
 For this assignment I wanted to focus on the middleware/backend code, and really write my own API from scratch, not configure Supabasee and write a Fronend to interact with it, so the choice was easy :)
 
-## Notes on A.I
+## 📝 Notes on A.I
 
 In this course assignment, the following LLM's were used:
 
@@ -187,7 +187,7 @@ In this course assignment, the following LLM's were used:
 - [x] Chat GPT
 
 
-### How A.I was used
+### 🤖 How A.I was used
 
 - [x] **Rubberducking** - Explaining concepts and code from the course material
 - [x] **Code-review** - Reviewing my code and commenting, offering hints to best practices and why
@@ -195,7 +195,7 @@ In this course assignment, the following LLM's were used:
 - [x] **Drafting documentation** - Drafting swagger documentation for the routes used in this CA. Based on video in course material
 - [x] **Not used to generate copy/paste code I do not understand**
 
-### Student responsibility
+### 🎓 Student responsibility
 
 As the learner, I am responsible for:
 
@@ -205,9 +205,9 @@ As the learner, I am responsible for:
 - [x] Taking time to think through problems before asking for help
 - [x] Using AI as a tutor, not as a substitute for learning
 
-## Code Citations
+## 🔖 Code Citations
 
-### Student Responsibility
+### 🎓 Student Responsibility
 
 Copied with pride from [@annikaeld](https://github.com/annikaeld)
 
