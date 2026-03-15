@@ -141,11 +141,15 @@ Check your `package.json` file and make sure the following dependencies are in p
 - [x] swagger-ui-express
 - [x] zod
 
+---
+
 ### Scripts
 
 - [x] `npm run dev`: Starts the server in development mode.
 - [x] `npm run build`: Compiles TypeScript code to JavaScript (for production)
 - [x] `npm start`: Runs the compiled JavaScript code (for production)
+
+---
 
 ### Swagger
 
@@ -153,6 +157,8 @@ Swagger is installed and used for documentation of API-endpoints.
 
 - [x] http://localhost:[PORT]/api-docs/
 - [ ] example: `http://localhost:3000/api-docs`
+
+---
 
 ### For testing (local dev only)
 
@@ -180,7 +186,6 @@ In this course assignment, the following LLM's were used:
 - [x] GitHub Co-Pilot (Inside VS Code)
 - [x] Chat GPT
 
----
 
 ### How A.I was used
 
