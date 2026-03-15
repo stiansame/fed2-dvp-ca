@@ -106,3 +106,31 @@ Example request: `Get/articles`
     FOREIGN KEY (submitted_by) REFERENCES users(id)
     );
 ```
+
+## Setup
+1. Install dependencies
+```BASH
+	npm install
+```
+2. Copy `.env.example`to `.env`and ipdate with your own values
+```BASH
+	Copy-Item .env.example .env
+```
+3. Run the application
+```BASH
+	npm run dev
+```
+
+### Installed dependencies
+Check your `package.json` file and make sure the following dependencies are in place:
+- [x] bcrypt
+- [x] cors
+- [x] dotenv
+- [x] express
+- [x] jsonwebtoken
+- [x] mysql2
+- [x] swagger-jsdoc
+- [x] swagger-ui-express
+- [x] zod
+
+
