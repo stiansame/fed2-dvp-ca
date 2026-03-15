@@ -47,6 +47,7 @@ Build a news platform where users can browse and submit news articles, using an 
 ### Required Endpoints
 
 - [x] **POST /auth/register** - User registration
+
 ```JSON
       {
       "username": "tyler",
@@ -54,18 +55,22 @@ Build a news platform where users can browse and submit news articles, using an 
       "password": "P@ssword!2026"
       }
 ```
+
 - [x] **POST /auth/login** - User login (returns JWT)
+
 ```JSON
 	{
 	  "email": "tylerdurden@bestsoaps.com",
 	  "password": "P@ssword!2026"
 	}
 ```
+
 - [x] **GET /articles** - View all articles (public access)
 
 Example request: `Get/articles`
-    
+
 - [x] **POST /articles** - Submit new article (protected, requires JWT)
+
 ```JSON
       {
       "title": "Human fat used in soap",
@@ -74,4 +79,30 @@ Example request: `Get/articles`
       }
 ```
 
+### DB Tables
 
+- [x] users
+
+```SQL
+    CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username varchar(50) UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+```
+
+- [x] articles
+
+```SQL
+    CREATE TABLE articles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    body TEXT NOT NULL,
+    category VARCHAR(100),
+    submitted_by INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (submitted_by) REFERENCES users(id)
+    );
+```
