@@ -55,7 +55,7 @@ Build a news platform where users can browse and submit news articles, using an 
       "password": P@ssword!2026
       }
 
-	````
+	```
 
 - [x] POST /auth/login - User login (returns JWT)
 
@@ -65,7 +65,7 @@ Build a news platform where users can browse and submit news articles, using an 
   "password": P@ssword!2026
 }
 
-	````
+	```
 
 - [x] GET /articles - View all articles (public access)
 
